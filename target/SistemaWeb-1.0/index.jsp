@@ -4,6 +4,7 @@
     Author     : claug
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -28,9 +29,19 @@
             <input type="password" class="form-control border border-primary" id="password" name="password" placeholder="Introduce contraseña">
           </div>
 
+          <c:if test="${invalid != null}">
+            <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
+              ${invalid}
+            </div>
+          </c:if>
+
           <div class="d-grid">
             <input class="btn btn-primary" type="submit" value="Iniciar sesion"/>
           </div> 
+          <div class="d-grid mt-4">
+            <a class="nav-link" href="agregarUsuario.jsp">Registrar usuario</a>
+          </div> 
+
         </form>
 
       </div>

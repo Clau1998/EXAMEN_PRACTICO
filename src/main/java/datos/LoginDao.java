@@ -48,7 +48,7 @@ public class LoginDao {
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    String cadena_sql = "SELECT PASSWORD FROM USUARIO WHERE LOGIN=?";
+    String cadena_sql = "SELECT PASSWORD FROM USUARIO WHERE LOGIN=? AND FECHA_VIGENCIA>SYSDATE";
     try {
       conn = Conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
@@ -62,7 +62,33 @@ public class LoginDao {
       e.printStackTrace(System.out);
     }
 
-    return login;
+    return "";
+  }
+  
+  public boolean isVigente(String login) {
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    String cadena_sql = "SELECT PASSWORD,FECHA_VIGENCIA FROM USUARIO WHERE LOGIN=? AND FECHA_VIGENCIA>SYSDATE";
+    System.out.println("datos.LoginDao.isVigente()------------------------rrrr"+cadena_sql);
+    try {
+      conn = Conexion.conectar();
+      stmt = conn.prepareStatement(cadena_sql);
+      stmt.setString(1, login);
+      rs = stmt.executeQuery();
+      if (rs.next()) {
+        return true;
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace(System.out);
+    } finally {
+      Conexion.close(rs);
+      Conexion.close(stmt);
+      Conexion.close(conn);
+    }
+    return false;
+
   }
 
 }

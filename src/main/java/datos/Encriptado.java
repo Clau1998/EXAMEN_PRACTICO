@@ -13,6 +13,7 @@ import java.util.Base64;
  * @author claug
  */
 public class Encriptado {
+
   public String encrypt(String password) throws Exception {
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hash = md.digest(password.getBytes("UTF-8"));
@@ -20,12 +21,22 @@ public class Encriptado {
     return encodedHash;
   }
 
-  public String decodificar(String password) {
-    byte[] bytesDecodificados = Base64.getDecoder().decode(password);
-    String passCodificada = new String(bytesDecodificados);
+  /**
+   * 
+   * @param password contraseña que se usa para loguearse
+   * @param hash contraseña hass guardada en la bd
+   * @return 
+   */
+  public boolean verify(String password, String hash) {
+    try {
+      String passwordHash = encrypt(password);
+      return passwordHash.equals(hash);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
 
-    System.out.println("decodificado: " + passCodificada);
-    return passCodificada;
+    }
+    return false;
+
   }
 
 }

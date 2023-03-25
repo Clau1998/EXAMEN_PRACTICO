@@ -54,30 +54,34 @@ public class Login extends HttpServlet {
     if (accion != null) {
       switch (accion) {
         case "login":
+          String invalid = null;
           LoginDao loginDao = new LoginDao();
           String login = request.getParameter("login");
-          String password = request.getParameter("password");
+          String passwordLogueo = request.getParameter("password");
 
           //consultar y retornar el password
-          String passEncriptada = loginDao.obtenerPassword(login);
-          System.out.println("Login.doPost(): ---------- " + passEncriptada);
+          String passhash = loginDao.obtenerPassword(login);
+          System.out.println("Login.doPost(): ---------- " + passhash);
           Encriptado encriptado = new Encriptado();
-          
-           {
-            try {
-              password = encriptado.encrypt(password);
-            } catch (Exception ex) {
-              ex.printStackTrace(System.out);
-            }
-          }
-          if (login == null || password == null || !loginDao.autenticacion(login, password)) {
-            response.sendRedirect("index.jsp");
-          } else {
+
+          if (passhash == null) {
+            request.setAttribute("invalid", "Usuario o Contraseña incorrecto o fecha vigencia expirado");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+
+          } else if (login == null || passwordLogueo == null || !encriptado.verify(passwordLogueo, passhash)) {
+
+            request.setAttribute("invalid", "Usuario o Contraseña incorrecto");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+            //response.sendRedirect("index.jsp");
+
+          } else if (encriptado.verify(passwordLogueo, passhash)) {
             HttpSession sesion = request.getSession();
             sesion.setAttribute("nombre", login);
             RequestDispatcher dispatcher = request.getRequestDispatcher("bienvenida.jsp");
             dispatcher.forward(request, response);
+
           }
+
           break;
 
         case "logout":

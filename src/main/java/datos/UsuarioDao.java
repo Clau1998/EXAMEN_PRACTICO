@@ -57,7 +57,7 @@ public class UsuarioDao {
     Connection conn = null;
     PreparedStatement stmt = null;
     int rows = 0;
-    String cadena_sql = "INSERT INTO USUARIO  VALUES(?,?,?,?,?,SYSDATE,SYSDATE,'A',0,SYSDATE,SYSDATE +7,0,?,?,?,SYSDATE)";
+    String cadena_sql = "INSERT INTO USUARIO  VALUES(?,?,?,?,?,SYSDATE,NULL,'A',0,NULL,SYSDATE +7,0,?,?,?,SYSDATE)";
 
     try {
       conn = Conexion.conectar();
@@ -134,8 +134,8 @@ public class UsuarioDao {
     return rows;
 
   }
-  
-    public int altaUsuario(Usuario usuario) {
+
+  public int altaUsuario(Usuario usuario) {
     String cadena_sql = "UPDATE USUARIO SET status='A',fecha_modificacion=SYSDATE, fecha_baja=SYSDATE WHERE login=?";
     Connection conn = null;
     PreparedStatement stmt = null;
