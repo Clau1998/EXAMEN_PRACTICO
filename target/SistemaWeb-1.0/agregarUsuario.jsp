@@ -4,6 +4,7 @@
     Author     : claug
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -22,6 +23,11 @@
 
         <div class="card-body">
           <form action="ServletControlador?accion=registrarU" method="POST" class="was-validated">  
+            <c:if test="${login != null}">
+            <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
+              ${login}
+            </div>
+          </c:if>
             <div class="row g-3">
               <div class="col">
                 <div class="form-group">
@@ -73,20 +79,26 @@
               <div class="col">
                 <div class="form-group">
                   <label for="cliente">Cliente</label>
-                  <input type="number" class="form-control" name="cliente" placeholder="cliente" step="any" required>
+                  <input type="number" class="form-control" name="cliente" placeholder="Cliente" step="any" required>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="area">Area</label>
-                  <input type="number" class="form-control" name="area" required>
+                  <input type="number" class="form-control" name="area" placeholder="Area" required>
                 </div> 
               </div>
             </div>
 
             <div>
-              <input class="btn btn-primary" type="submit" value="Registrar"/>
+              
             </div> 
+            
+            <div class="row g-3" style="margin-left: 10px;">
+             <input class="btn btn-primary" type="submit" value="Registrar"/>
+              <a class="nav-link" href="index.jsp">Cancelar</a>
+            </div> 
+          
           </form>
         </div>
 

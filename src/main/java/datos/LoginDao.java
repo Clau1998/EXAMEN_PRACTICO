@@ -70,7 +70,6 @@ public class LoginDao {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     String cadena_sql = "SELECT PASSWORD,FECHA_VIGENCIA FROM USUARIO WHERE LOGIN=? AND FECHA_VIGENCIA>SYSDATE";
-    System.out.println("datos.LoginDao.isVigente()------------------------rrrr"+cadena_sql);
     try {
       conn = Conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);

@@ -72,7 +72,7 @@ public class Login extends HttpServlet {
 
             request.setAttribute("invalid", "Usuario o Contraseña incorrecto");
             request.getRequestDispatcher("index.jsp").forward(request, response);
-            //response.sendRedirect("index.jsp");
+           
 
           } else if (encriptado.verify(passwordLogueo, passhash)) {
             HttpSession sesion = request.getSession();

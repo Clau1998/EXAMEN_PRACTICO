@@ -30,7 +30,7 @@
           </div>
 
           <c:if test="${invalid != null}">
-            <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
+            <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3 mb-3">
               ${invalid}
             </div>
           </c:if>

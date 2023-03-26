@@ -85,6 +85,33 @@ public class UsuarioDao {
     return rows;
   }
 
+  public boolean isExist(String login) {
+    String cadena_sql = "SELECT LOGIN FROM USUARIO WHERE LOGIN=?";
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+      conn = Conexion.conectar();
+      stmt = conn.prepareStatement(cadena_sql);
+      stmt.setString(1, login);
+      rs=stmt.executeQuery();
+
+      if (rs.next()) {
+        return true;
+      }
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+
+    } finally {
+      Conexion.close(stmt);
+      Conexion.close(rs);
+      Conexion.close(conn);
+    }
+
+    return false;
+  }
+
   public Usuario buscar(Usuario usuario) {
     String cadena_sql = "SELECT login,nombre,apellido_paterno,apellido_materno,fecha_baja FROM USUARIO WHERE login=?";
     Connection conn = null;
@@ -260,7 +287,7 @@ public class UsuarioDao {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     List<Usuario> usuarios = new ArrayList<>();
-    String cadena_sql = "SELECT nombre, login, TO_CHAR(fecha_alta, 'DD/MM/YYYY') AS fecha_alta,status FROM USUARIO WHERE FECHA_ALTA BETWEEN to_date('" + fechaAlta.trim() + "', 'YYYY-MM-DD') AND to_date('" + fechaFinal.trim() + "', 'YYYY-MM-DD')";
+    String cadena_sql = "SELECT nombre || ' ' || apellido_paterno AS nombre, login, TO_CHAR(fecha_alta, 'DD/MM/YYYY') AS fecha_alta,status FROM USUARIO WHERE FECHA_ALTA BETWEEN to_date('" + fechaAlta.trim() + "', 'YYYY-MM-DD') AND to_date('" + fechaFinal.trim() + "', 'YYYY-MM-DD')+1";
     try {
       conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
@@ -287,5 +314,7 @@ public class UsuarioDao {
 
     return usuarios;
   }
+  
+
 
 }
