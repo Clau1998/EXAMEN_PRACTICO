@@ -7,7 +7,6 @@
 import datos.Encriptado;
 import datos.LoginDao;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,7 +40,6 @@ public class Login extends HttpServlet {
         case "logout":
           this.logout(request, response);
           break;
-
       }
     }
 
@@ -54,14 +52,12 @@ public class Login extends HttpServlet {
     if (accion != null) {
       switch (accion) {
         case "login":
-          String invalid = null;
           LoginDao loginDao = new LoginDao();
           String login = request.getParameter("login");
           String passwordLogueo = request.getParameter("password");
 
           //consultar y retornar el password
           String passhash = loginDao.obtenerPassword(login);
-          System.out.println("Login.doPost(): ---------- " + passhash);
           Encriptado encriptado = new Encriptado();
 
           if (passhash == null) {
@@ -72,22 +68,14 @@ public class Login extends HttpServlet {
 
             request.setAttribute("invalid", "Usuario o Contraseña incorrecto");
             request.getRequestDispatcher("index.jsp").forward(request, response);
-           
 
           } else if (encriptado.verify(passwordLogueo, passhash)) {
             HttpSession sesion = request.getSession();
             sesion.setAttribute("nombre", login);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("bienvenida.jsp");
-            dispatcher.forward(request, response);
+            response.sendRedirect("bienvenida.jsp");
 
           }
-
           break;
-
-        case "logout":
-          this.logout(request, response);
-          break;
-
       }
     }
 
@@ -97,7 +85,7 @@ public class Login extends HttpServlet {
     HttpSession sesion = request.getSession(true);
     //Cerrar sesion
     sesion.invalidate();
-    //Redirecciono a index.jsp -->login
+    //Redireccionar a index.jsp -->login
     response.sendRedirect("index.jsp");
 
   }

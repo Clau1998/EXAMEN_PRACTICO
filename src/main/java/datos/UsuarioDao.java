@@ -44,9 +44,9 @@ public class UsuarioDao {
     } catch (SQLException e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(rs);
+      conexion.close(conn);
 
     }
 
@@ -60,7 +60,7 @@ public class UsuarioDao {
     String cadena_sql = "INSERT INTO USUARIO  VALUES(?,?,?,?,?,SYSDATE,NULL,'A',0,NULL,SYSDATE +7,0,?,?,?,SYSDATE)";
 
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
 
       stmt.setString(1, usuario.getLogin());
@@ -77,39 +77,36 @@ public class UsuarioDao {
     } catch (SQLException e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(conn);
-
+      conexion.close(stmt);
+      conexion.close(conn);
     }
-
     return rows;
   }
 
-  public boolean isExist(String login) {
+  public String isExist(String login) {
     String cadena_sql = "SELECT LOGIN FROM USUARIO WHERE LOGIN=?";
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, login);
-      rs=stmt.executeQuery();
-
+      rs = stmt.executeQuery();
+      
       if (rs.next()) {
-        return true;
+        return rs.getString(1);
       }
 
     } catch (Exception e) {
       System.out.println(e.getMessage());
 
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(rs);
     }
 
-    return false;
+    return null;
   }
 
   public Usuario buscar(Usuario usuario) {
@@ -118,7 +115,7 @@ public class UsuarioDao {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, usuario.getLogin());
       rs = stmt.executeQuery();
@@ -133,9 +130,9 @@ public class UsuarioDao {
     } catch (Exception e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(rs);
+      conexion.close(conn);
 
     }
     return usuario;
@@ -148,15 +145,15 @@ public class UsuarioDao {
     PreparedStatement stmt = null;
     int rows = 0;
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, usuario.getLogin());
       rows = stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(conn);
     }
     return rows;
 
@@ -168,15 +165,15 @@ public class UsuarioDao {
     PreparedStatement stmt = null;
     int rows = 0;
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, usuario.getLogin());
       rows = stmt.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(conn);
     }
     return rows;
 
@@ -188,7 +185,7 @@ public class UsuarioDao {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, usuario.getLogin());
       rs = stmt.executeQuery();
@@ -207,9 +204,9 @@ public class UsuarioDao {
     } catch (Exception e) {
       e.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(rs);
+      conexion.close(conn);
 
     }
     return usuario;
@@ -234,13 +231,11 @@ public class UsuarioDao {
       stmt.setString(8, usuario.getLogin());
 
       rows = stmt.executeUpdate();
-
-      rows = stmt.executeUpdate();
     } catch (SQLException ex) {
       ex.printStackTrace(System.out);
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(conn);
 
     }
     return rows;
@@ -253,7 +248,6 @@ public class UsuarioDao {
     ResultSet rs = null;
     List<Usuario> usuarios = new ArrayList<>();
     String cadena_sql = "SELECT nombre, login, TO_CHAR(fecha_alta, 'DD/MM/YYYY') AS fecha_alta, status FROM USUARIO WHERE LOWER(nombre) LIKE LOWER('%" + nombre + "%')";
-    System.out.println("datos.UsuarioDao.buscarPoNombre()" + cadena_sql);
     try {
       conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
@@ -265,7 +259,6 @@ public class UsuarioDao {
         usuario.setLogin(rs.getString("login"));
         usuario.setFechaAlta(rs.getString("fecha_alta"));
         usuario.setStatus(rs.getString("status"));
-
         usuarios.add(usuario);
       }
 
@@ -273,12 +266,11 @@ public class UsuarioDao {
       e.printStackTrace(System.out);
 
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
+      conexion.close(stmt);
+      conexion.close(rs);
+      conexion.close(conn);
 
     }
-
     return usuarios;
   }
 
@@ -306,15 +298,12 @@ public class UsuarioDao {
       e.printStackTrace(System.out);
 
     } finally {
-      Conexion.close(stmt);
-      Conexion.close(rs);
-      Conexion.close(conn);
-
+      conexion.close(stmt);
+      conexion.close(rs);
+      conexion.close(conn);
     }
 
     return usuarios;
   }
-  
-
 
 }

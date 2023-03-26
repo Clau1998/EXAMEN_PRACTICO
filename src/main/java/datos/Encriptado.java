@@ -14,6 +14,12 @@ import java.util.Base64;
  */
 public class Encriptado {
 
+  /**
+   * 
+   * @param password  contraseña que se va a encriptar
+   * @return contraseña encriptada Base64
+   * @throws Exception 
+   */
   public String encrypt(String password) throws Exception {
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hash = md.digest(password.getBytes("UTF-8"));
@@ -24,7 +30,7 @@ public class Encriptado {
   /**
    * 
    * @param password contraseña que se usa para loguearse
-   * @param hash contraseña hass guardada en la bd
+   * @param hash contraseña hash guardada en la bd
    * @return 
    */
   public boolean verify(String password, String hash) {

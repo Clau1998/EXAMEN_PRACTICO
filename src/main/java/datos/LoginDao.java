@@ -18,76 +18,26 @@ public class LoginDao {
 
   static Conexion conexion = new Conexion();
 
-  public boolean autenticacion(String login, String password) {
-    Connection conn = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    String cadena_sql = "SELECT * FROM USUARIO U WHERE U.LOGIN=? AND PASSWORD=?";
-    try {
-      conn = Conexion.conectar();
-      stmt = conn.prepareStatement(cadena_sql);
-      stmt.setString(1, login);
-      stmt.setString(2, password);
-      rs = stmt.executeQuery();
-
-      if (rs.next()) {
-        return true;
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace(System.out);
-    } finally {
-      Conexion.close(rs);
-      Conexion.close(stmt);
-      Conexion.close(conn);
-    }
-    return false;
-  }
-
   public String obtenerPassword(String login) {
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
     String cadena_sql = "SELECT PASSWORD FROM USUARIO WHERE LOGIN=? AND FECHA_VIGENCIA>SYSDATE";
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, login);
       rs = stmt.executeQuery();
       if (rs.next()) {
         return rs.getString(1);
       }
-
-    } catch (Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace(System.out);
+    }finally{
+      conexion.close(stmt);
+      conexion.close(rs);
     }
 
     return "";
   }
-  
-  public boolean isVigente(String login) {
-    Connection conn = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-    String cadena_sql = "SELECT PASSWORD,FECHA_VIGENCIA FROM USUARIO WHERE LOGIN=? AND FECHA_VIGENCIA>SYSDATE";
-    try {
-      conn = Conexion.conectar();
-      stmt = conn.prepareStatement(cadena_sql);
-      stmt.setString(1, login);
-      rs = stmt.executeQuery();
-      if (rs.next()) {
-        return true;
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace(System.out);
-    } finally {
-      Conexion.close(rs);
-      Conexion.close(stmt);
-      Conexion.close(conn);
-    }
-    return false;
-
-  }
-
 }

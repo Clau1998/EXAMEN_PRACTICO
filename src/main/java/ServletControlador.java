@@ -31,7 +31,6 @@ public class ServletControlador extends HttpServlet {
       switch (accion) {
         case "login":
           this.accionDefault(request, response);
-
           break;
         case "tablero":
           this.tableroUsuario(request, response);
@@ -101,7 +100,6 @@ public class ServletControlador extends HttpServlet {
 
   public void accionDefault(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-
     response.sendRedirect("bienvenida.jsp");
   }
 
@@ -110,11 +108,7 @@ public class ServletControlador extends HttpServlet {
     System.out.println("Usuarios: " + usuarios);
     HttpSession sesion = request.getSession();
     sesion.setAttribute("usuarios", usuarios);
-    //request.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
-
-    System.out.println("ServletControlador.tableroUsuario()");
-
   }
 
   private void tableroUsuarioI(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -132,7 +126,6 @@ public class ServletControlador extends HttpServlet {
   }
 
   private void agregarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     String login = request.getParameter("login");
     String nombre = request.getParameter("nombre");
     String apPaterno = request.getParameter("apellidoPaterno");
@@ -150,20 +143,26 @@ public class ServletControlador extends HttpServlet {
       e.printStackTrace(System.out);
     }
 
-    Usuario usuario = new Usuario();
-    usuario.setLogin(login);
-    usuario.setNombre(nombre);
-    usuario.setApellidoPaterno(apPaterno);
-    usuario.setApellidoMaterno(apMaterno);
-    usuario.setEmail(email);
-    usuario.setPassword(password);
-    usuario.setCliente(cliente);
-    usuario.setArea(area);
+    UsuarioDao usuarioDao = new UsuarioDao();
+    //VERIFICAR EL LOGIN--si hay dato es que ya existe 
+    if (usuarioDao.isExist(login) == null) {
+      request.setAttribute("login", "El *login* es repetido, intente de nuevo con otro dato");
+      request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
 
-    int registroinsertado = new UsuarioDao().insertar(usuario);
-    System.out.println("registroinsertado: " + registroinsertado);
-    this.tableroUsuario(request, response);
-
+    } else {
+      Usuario usuario = new Usuario();
+      usuario.setLogin(login);
+      usuario.setNombre(nombre);
+      usuario.setApellidoPaterno(apPaterno);
+      usuario.setApellidoMaterno(apMaterno);
+      usuario.setEmail(email);
+      usuario.setPassword(password);
+      usuario.setCliente(cliente);
+      usuario.setArea(area);
+      int registroinsertado = usuarioDao.insertar(usuario);
+      System.out.println("registroinsertado: " + registroinsertado);
+      this.tableroUsuario(request, response);
+    }
   }
 
   private void registrarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -185,8 +184,8 @@ public class ServletControlador extends HttpServlet {
     }
 
     UsuarioDao usuarioDao = new UsuarioDao();
-    //VERIFICAR EL LOGIN--si es tru es que existe un dato
-    if (usuarioDao.isExist(login) == true) {
+    //VERIFICAR EL LOGIN--si hay dato es que ya existe 
+    if (usuarioDao.isExist(login) == null) {
       request.setAttribute("login", "El *login* es repetido, intente de nuevo con otro dato");
       request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
 
@@ -211,7 +210,6 @@ public class ServletControlador extends HttpServlet {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
     usuario.setLogin(login);
-    System.out.println(login);
     new UsuarioDao().buscar(usuario);
     request.setAttribute("usuario", usuario);
     String jspEditar = "/WEB-INF/bajaUsuario.jsp";
@@ -306,14 +304,11 @@ public class ServletControlador extends HttpServlet {
   }
 
   public void busquedaPorFecha(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     String fechaAlta = request.getParameter("fechaAlta");
     String fechaFinal = request.getParameter("fechaFinal");
     List<Usuario> usuarios = new UsuarioDao().buscar_por_fecha(fechaAlta, fechaFinal);
     HttpSession sesion = request.getSession();
     sesion.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
-
   }
-
 }

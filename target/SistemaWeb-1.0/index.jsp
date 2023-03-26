@@ -18,8 +18,7 @@
     <div class="vh-100 d-flex justify-content-center align-items-center">
       <div class="col-md-4 p-5 shadow-sm border rounded-3">
         <h2 class="text-center mb-4 text-primary">Login</h2>
-        <form  action="Login?accion=login"
-               method="POST">
+        <form action="Login?accion=login" method="POST">
           <div class="form-group">
             <label for="login" class="form-label">Login</label>
             <input type="text" class="form-control border border-primary" id="login" name="login" placeholder="Introduce login">
