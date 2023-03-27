@@ -23,11 +23,11 @@
 
         <div class="card-body">
           <form action="ServletControlador?accion=registrarU" method="POST" class="was-validated">  
-            <c:if test="${login != null}">
-            <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
-              ${login}
-            </div>
-          </c:if>
+            <c:if test="${login == true}">
+              <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
+                El *Login* repetido, intente con un nuevo dato.
+              </div>
+            </c:if>
             <div class="row g-3">
               <div class="col">
                 <div class="form-group">
@@ -91,14 +91,14 @@
             </div>
 
             <div>
-              
+
             </div> 
-            
+
             <div class="row g-3" style="margin-left: 10px;">
-             <input class="btn btn-primary" type="submit" value="Registrar"/>
+              <input class="btn btn-primary" type="submit" value="Registrar"/>
               <a class="nav-link" href="index.jsp">Cancelar</a>
             </div> 
-          
+
           </form>
         </div>
 

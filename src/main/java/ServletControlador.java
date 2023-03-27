@@ -145,9 +145,9 @@ public class ServletControlador extends HttpServlet {
 
     UsuarioDao usuarioDao = new UsuarioDao();
     //VERIFICAR EL LOGIN--si hay dato es que ya existe 
-    if (usuarioDao.isExist(login) == null) {
-      request.setAttribute("login", "El *login* es repetido, intente de nuevo con otro dato");
-      request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
+    if (usuarioDao.isExist(login) == true) {
+      request.setAttribute("login", "true");
+      request.getRequestDispatcher("formUsuario.jsp").forward(request, response);
 
     } else {
       Usuario usuario = new Usuario();
@@ -184,9 +184,10 @@ public class ServletControlador extends HttpServlet {
     }
 
     UsuarioDao usuarioDao = new UsuarioDao();
-    //VERIFICAR EL LOGIN--si hay dato es que ya existe 
-    if (usuarioDao.isExist(login) == null) {
-      request.setAttribute("login", "El *login* es repetido, intente de nuevo con otro dato");
+    //VERIFICAR EL LOGIN--si hay dato es que ya existe
+    if (usuarioDao.isExist(login) == true) {
+
+      request.setAttribute("login", "true");
       request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
 
     } else {

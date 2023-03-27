@@ -83,7 +83,7 @@ public class UsuarioDao {
     return rows;
   }
 
-  public String isExist(String login) {
+  public boolean isExist(String login) {
     String cadena_sql = "SELECT LOGIN FROM USUARIO WHERE LOGIN=?";
     Connection conn = null;
     PreparedStatement stmt = null;
@@ -93,9 +93,9 @@ public class UsuarioDao {
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, login);
       rs = stmt.executeQuery();
-      
+
       if (rs.next()) {
-        return rs.getString(1);
+        return true;
       }
 
     } catch (Exception e) {
@@ -106,7 +106,7 @@ public class UsuarioDao {
       conexion.close(rs);
     }
 
-    return null;
+    return false;
   }
 
   public Usuario buscar(Usuario usuario) {
@@ -219,7 +219,7 @@ public class UsuarioDao {
     int rows = 0;
 
     try {
-      conn = Conexion.conectar();
+      conn = conexion.conectar();
       stmt = conn.prepareStatement(cadena_sql);
       stmt.setString(1, usuario.getNombre());
       stmt.setString(2, usuario.getApellidoPaterno());

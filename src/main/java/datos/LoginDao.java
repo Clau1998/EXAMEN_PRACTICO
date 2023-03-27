@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class LoginDao {
 
-  static Conexion conexion = new Conexion();
+   Conexion conexion = new Conexion();
 
   public String obtenerPassword(String login) {
     Connection conn = null;
