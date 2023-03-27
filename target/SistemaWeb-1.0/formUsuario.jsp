@@ -23,13 +23,14 @@
 
         <div class="card-body">
           <form action="ServletControlador?accion=agregarU" method="POST" class="was-validated">  
+            <c:if test="${login == true}">
+              <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
+                El *Login* repetido, intente con un nuevo dato.
+              </div>
+            </c:if>
+
             <div class="row g-3">
               <div class="col">
-                <c:if test="${login == true}">
-                  <div class="p-3 text-center bg-primary-subtle border border-primary-subtle rounded-3">
-                    El *Login* repetido, intente con un nuevo dato.
-                  </div>
-                </c:if>
                 <div class="form-group">
                   <label for="login">Login</label> 
                   <input type="text" class="form-control" name="login" placeholder="login" required>
