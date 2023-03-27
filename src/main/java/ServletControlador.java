@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(urlPatterns = {"/ServletControlador"})
 public class ServletControlador extends HttpServlet {
-
+  
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
@@ -35,37 +35,37 @@ public class ServletControlador extends HttpServlet {
         case "tablero":
           this.tableroUsuario(request, response);
           break;
-
+        
         case "agregarU":
           this.agregarUsuario(request, response);
           break;
         case "registrarU":
           this.registrarUsuario(request, response);
           break;
-
+        
         case "modificar":
           this.modificar(request, response);
           break;
-
+        
         case "bajaUsuario":
           this.bajaUsuario(request, response);
           break;
         case "altaUsuario":
           this.alta_Usuario(request, response);
           break;
-
+        
         case "buscarNombre":
           this.busquedaPorNombre(request, response);
           break;
-
+        
         case "buscarFecha":
           this.busquedaPorFecha(request, response);
           break;
-
+        
       }
     }
   }
-
+  
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String accion = request.getParameter("accion");
@@ -77,32 +77,32 @@ public class ServletControlador extends HttpServlet {
         case "inativo":
           this.tableroUsuarioI(request, response);
           break;
-
+        
         case "revocado":
           this.tableroUsuarioR(request, response);
           break;
-
+        
         case "bajaU":
           this.dar_Baja_U(request, response);
           break;
-
+        
         case "altaU":
           this.dar_Alta_U(request, response);
           break;
-
+        
         case "editarU":
           this.editarUsuario(request, response);
           break;
-
+        
       }
     }
   }
-
+  
   public void accionDefault(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
     response.sendRedirect("bienvenida.jsp");
   }
-
+  
   private void tableroUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     List<Usuario> usuarios = new UsuarioDao().listar("A");
     System.out.println("Usuarios: " + usuarios);
@@ -110,21 +110,21 @@ public class ServletControlador extends HttpServlet {
     sesion.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
   }
-
+  
   private void tableroUsuarioI(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     List<Usuario> usuarios = new UsuarioDao().listar("B");
     HttpSession sesion = request.getSession();
     sesion.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
   }
-
+  
   private void tableroUsuarioR(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     List<Usuario> usuarios = new UsuarioDao().listar("R");
     HttpSession sesion = request.getSession();
     sesion.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
   }
-
+  
   private void agregarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     String nombre = request.getParameter("nombre");
@@ -134,22 +134,18 @@ public class ServletControlador extends HttpServlet {
     String password = request.getParameter("password");
     float cliente = Float.parseFloat(request.getParameter("cliente"));
     int area = Integer.parseInt(request.getParameter("area"));
-
+    
     try {
       Encriptado encriptado = new Encriptado();
       password = encriptado.encrypt(password);
-
+      
     } catch (Exception e) {
       e.printStackTrace(System.out);
     }
-
+    
     UsuarioDao usuarioDao = new UsuarioDao();
     //VERIFICAR EL LOGIN--si hay dato es que ya existe 
-    if (usuarioDao.isExist(login) == true) {
-      request.setAttribute("login", "true");
-      request.getRequestDispatcher("formUsuario.jsp").forward(request, response);
-
-    } else {
+    if (usuarioDao.isExist(login) == null) {
       Usuario usuario = new Usuario();
       usuario.setLogin(login);
       usuario.setNombre(nombre);
@@ -162,9 +158,15 @@ public class ServletControlador extends HttpServlet {
       int registroinsertado = usuarioDao.insertar(usuario);
       System.out.println("registroinsertado: " + registroinsertado);
       this.tableroUsuario(request, response);
+      
+    } else if(usuarioDao.isExist(login) !=null) {
+      
+      request.setAttribute("login", "null");
+      request.getRequestDispatcher("formUsuario.jsp").forward(request, response);
+      
     }
   }
-
+  
   private void registrarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     String nombre = request.getParameter("nombre");
@@ -174,23 +176,20 @@ public class ServletControlador extends HttpServlet {
     String password = request.getParameter("password");
     float cliente = Float.parseFloat(request.getParameter("cliente"));
     int area = Integer.parseInt(request.getParameter("area"));
-
+    
     try {
       Encriptado encriptado = new Encriptado();
       password = encriptado.encrypt(password);
-
+      
     } catch (Exception e) {
       e.printStackTrace(System.out);
     }
-
+    
     UsuarioDao usuarioDao = new UsuarioDao();
     //VERIFICAR EL LOGIN--si hay dato es que ya existe
-    if (usuarioDao.isExist(login) == true) {
-
-      request.setAttribute("login", "true");
-      request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
-
-    } else {
+    System.out.println("ServletControlador.registrarUsuario()---------------" + usuarioDao.isExist(login));
+    
+    if (usuarioDao.isExist(login) == null) {
       Usuario usuario = new Usuario();
       usuario.setLogin(login);
       usuario.setNombre(nombre);
@@ -202,11 +201,15 @@ public class ServletControlador extends HttpServlet {
       usuario.setArea(area);
       usuarioDao.insertar(usuario);
       response.sendRedirect("index.jsp");
+      
+    } else if (usuarioDao.isExist(login) != null) {
+      request.setAttribute("login", "null");
+      request.getRequestDispatcher("agregarUsuario.jsp").forward(request, response);
 
     }
-
+    
   }
-
+  
   private void dar_Baja_U(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
@@ -215,9 +218,9 @@ public class ServletControlador extends HttpServlet {
     request.setAttribute("usuario", usuario);
     String jspEditar = "/WEB-INF/bajaUsuario.jsp";
     request.getRequestDispatcher(jspEditar).forward(request, response);
-
+    
   }
-
+  
   private void bajaUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
@@ -226,9 +229,9 @@ public class ServletControlador extends HttpServlet {
     System.out.println("registrosModificados: " + registrosModificados);
     //Redirigimos hacia al tableroUsuarioI
     this.tableroUsuarioI(request, response);
-
+    
   }
-
+  
   private void dar_Alta_U(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
@@ -238,18 +241,18 @@ public class ServletControlador extends HttpServlet {
     request.setAttribute("usuario", usuario);
     String jspEditar = "/WEB-INF/altaUsuario.jsp";
     request.getRequestDispatcher(jspEditar).forward(request, response);
-
+    
   }
-
+  
   private void alta_Usuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
     usuario.setLogin(login);
     new UsuarioDao().altaUsuario(usuario);
-
+    
     this.tableroUsuario(request, response);
   }
-
+  
   private void modificar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     String nombre = request.getParameter("nombre");
@@ -259,15 +262,15 @@ public class ServletControlador extends HttpServlet {
     String password = request.getParameter("password");
     float cliente = Float.parseFloat(request.getParameter("cliente"));
     int area = Integer.parseInt(request.getParameter("area"));
-
+    
     try {
       Encriptado encriptado = new Encriptado();
       password = encriptado.encrypt(password);
-
+      
     } catch (Exception e) {
       System.out.println(e);
     }
-
+    
     Usuario usuario = new Usuario();
     usuario.setLogin(login);
     usuario.setNombre(nombre);
@@ -277,12 +280,12 @@ public class ServletControlador extends HttpServlet {
     usuario.setPassword(password);
     usuario.setCliente(cliente);
     usuario.setArea(area);
-
+    
     int registromodificado = new UsuarioDao().actualizar(usuario);
     System.out.println("registroinsertado: " + registromodificado);
     this.tableroUsuario(request, response);
   }
-
+  
   private void editarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String login = request.getParameter("login");
     Usuario usuario = new Usuario();
@@ -291,19 +294,19 @@ public class ServletControlador extends HttpServlet {
     request.setAttribute("usuario", usuario);
     String jspEditar = "/WEB-INF/editarU.jsp";
     request.getRequestDispatcher(jspEditar).forward(request, response);
-
+    
   }
-
+  
   public void busquedaPorNombre(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    
     String nombre = request.getParameter("nombre");
     List<Usuario> usuarios = new UsuarioDao().buscarPorNombre(nombre);
     HttpSession sesion = request.getSession();
     sesion.setAttribute("usuarios", usuarios);
     response.sendRedirect("tablero.jsp");
-
+    
   }
-
+  
   public void busquedaPorFecha(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String fechaAlta = request.getParameter("fechaAlta");
     String fechaFinal = request.getParameter("fechaFinal");

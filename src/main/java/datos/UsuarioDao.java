@@ -83,7 +83,7 @@ public class UsuarioDao {
     return rows;
   }
 
-  public boolean isExist(String login) {
+  public String isExist(String login) {
     String cadena_sql = "SELECT LOGIN FROM USUARIO WHERE LOGIN=?";
     Connection conn = null;
     PreparedStatement stmt = null;
@@ -95,7 +95,7 @@ public class UsuarioDao {
       rs = stmt.executeQuery();
 
       if (rs.next()) {
-        return true;
+       return  rs.getString(1);
       }
 
     } catch (Exception e) {
@@ -106,7 +106,7 @@ public class UsuarioDao {
       conexion.close(rs);
     }
 
-    return false;
+    return null;
   }
 
   public Usuario buscar(Usuario usuario) {
